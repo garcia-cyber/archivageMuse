@@ -23,6 +23,50 @@ cur.execute("""
 # inormation par defaut 
 # cur.execute("insert into users(username ,email,password) values('admin', 'admin@gmail.com','admin@')") 
 
+## creation de la table collections 
+
+cur.execute(""" 
+
+    create table if not exists collections(
+            id_collection serial primary key , 
+            nom_collection varchar(255) unique not null,
+            desc_collection text
+            )
+
+""")
+
+
+# creation de la table artefact
+# cur.execute("""
+#                 create table if not exists artefacts(
+#             id_atefact serial primary key , 
+#             numero_accession varchar(50),
+#             tire varchar(50),
+#             description text,
+#             date_creation date ,
+#             materiau varchar(100),
+#             dimensions varchar(100),
+#             provenance text 
+            
+#             )
+
+
+#  """)
+
+
+# creation de la table createurs 
+cur.execute("""
+            create table if not exists createurs(
+            id_createur serial primary key ,
+            nom varchar(100), 
+            prenom varchar(100) ,
+            date_nai date , 
+            date_deces date ,
+            nationalite varchar(50), 
+            user_id bigserial references users(idu))
+            
+            """)
+
 con.commit()
 cur.close()
 con.close()
