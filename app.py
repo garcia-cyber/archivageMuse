@@ -100,6 +100,33 @@ def Enreg():
 @app.route('/adduser', methods=['POST','GET'])
 def adduser():
 
+    #post 
+    if request.method == 'POST':
+        user = request.form['user'] 
+        email = request.form['email'] 
+        muse  = request.form['muse']
+        fonction = 'sous-admin' 
+        password = '12345'
+
+        #verification du mail
+        dd = data() 
+        mail = dd.cursor()
+        mail.execute("select * from users where email = %s", [email])
+        ver = mail.fetchone()
+
+        ## !!!! VERIFICATION DU NOM DU MUSE 
+
+        if ver:
+            flash("l'email existe deja dans le systeme ")
+        else:
+            dbs = data()
+            cur = dbs.cursor()
+            cur.execute("insert into users(username,email,password,muse_id,fonctions) values(%s,%s,%s,%s,%s)",[user,email,password,muse,fonction]) 
+            dbs.commit()
+            cur.close()
+            dbs.close()
+            flash(f"{user} enregistre dans le systeme ")  
+
 
     # appel des information dans la table muses
     call = data()

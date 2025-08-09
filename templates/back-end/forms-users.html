@@ -392,6 +392,13 @@
                  
                 </div>
                 <div class="card">
+                    {% with messages = get_flashed_messages()%}
+                        {% if messages %}
+                            {% for i in messages %}
+                            <div class="alert alert-warning">{{i}}</div>
+                            {%endfor%}
+                        {% endif %}
+                    {% endwith %}
                   <form class="needs-validation" novalidate=""  method="post" action="/adduser">
                     <div class="card-header">
                       <h4>Formulaire Utilisateurs
