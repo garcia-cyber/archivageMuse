@@ -17,11 +17,17 @@
                 {% if session['fonction'] == 'administrataire' %}
                 <li><a class="nav-link" href="/muse">Ajout des Muses</a></li>
                 <li><a class="nav-link" href="/adduser">Ajout users </a></li>
+                <li><a class="nav-link" href="/artefactAdd">Ajouter artefact</a></li>
+                <li><a class="nav-link" href="/createursAdd">Ajouter createur</a></li>
+                {%else%}
+                    <li><a class="nav-link" href="/artefactAdd">Ajouter artefact</a></li>
+                    <li><a class="nav-link" href="/createursAdd">Ajouter createur</a></li>
+
                 {% endif %}  
                 
               </ul>
             </li>
-            <li class="dropdown">
+            <!-- <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="command"></i><span>Apps</span></a>
               <ul class="dropdown-menu">
                 <li><a class="nav-link" href="chat.html">Chat</a></li>
@@ -29,7 +35,7 @@
                 <li><a class="nav-link" href="blog.html">Blog</a></li>
                 <li><a class="nav-link" href="calendar.html">Calendar</a></li>
               </ul>
-            </li>
+            </li> -->
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="mail"></i><span>Email</span></a>
               <ul class="dropdown-menu">
@@ -38,7 +44,7 @@
                 <li><a class="nav-link" href="email-read.html">read</a></li>
               </ul>
             </li>
-            <li class="menu-header">UI Elements</li>
+            <!-- <li class="menu-header">UI Elements</li>
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="copy"></i><span>Basic
                   Components</span></a>
@@ -60,8 +66,8 @@
                 <li><a class="nav-link" href="flags.html">Flag</a></li>
                 <li><a class="nav-link" href="typography.html">Typography</a></li>
               </ul>
-            </li>
-            <li class="dropdown">
+            </li> -->
+            <!-- <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i
                   data-feather="shopping-bag"></i><span>Advanced</span></a>
               <ul class="dropdown-menu">
@@ -75,17 +81,17 @@
                 <li><a class="nav-link" href="pricing.html">Pricing</a></li>
                 <li><a class="nav-link" href="tabs.html">Tab</a></li>
               </ul>
-            </li>
-            <li><a class="nav-link" href="blank.html"><i data-feather="file"></i><span>Blank Page</span></a></li>
+            </li> -->
+            <!-- <li><a class="nav-link" href="blank.html"><i data-feather="file"></i><span>Blank Page</span></a></li> -->
             <li class="menu-header">Otika</li>
             <li class="dropdown">
-              <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="layout"></i><span>Forms</span></a>
+              <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="layout"></i><span>Liste</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="basic-form.html">Basic Form</a></li>
-                <li><a class="nav-link" href="forms-advanced-form.html">Advanced Form</a></li>
+                <li><a class="nav-link" href="/lstU">utilisateurs</a></li>
+                <!-- <li><a class="nav-link" href="forms-advanced-form.html">Advanced Form</a></li>
                 <li><a class="nav-link" href="forms-editor.html">Editor</a></li>
                 <li><a class="nav-link" href="forms-validation.html">Validation</a></li>
-                <li><a class="nav-link" href="form-wizard.html">Form Wizard</a></li>
+                <li><a class="nav-link" href="form-wizard.html">Form Wizard</a></li> -->
               </ul>
             </li>
             <li class="dropdown">

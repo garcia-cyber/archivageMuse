@@ -139,12 +139,26 @@ def adduser():
 #
 #
 # liste des muses 
-@app.route('/lstM', methods=['POST','GET'])
-def lstM():
-    return render_template('back-end/export-table.html')
+@app.route('/lstU', methods=['POST','GET'])
+def lstU():
+    #liste des utilisteurs du systemes
+    us = data()
+    all = us.cursor()
+    all.execute("select * , idm , lib_muse,province_m from users inner join muses on users.muse_id = muses.idm") 
+    da = all.fetchall()
+
+    return render_template('back-end/export-table.html' , aff = da)
 
 
-
+##
+##
+## ajout des artefact
+@app.route('/artefactAdd', methods = ['POST','GET'])
+def artefactAdd():
+    if 'session' in session :
+        return render_template('back-end/artefactAdd.html')
+    else:
+        return redirect('/login')
 
 
 
