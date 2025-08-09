@@ -12,6 +12,9 @@ create table if not exists muses(
     constraint pk_muse primary key(idM)
 ) ; 
 
+-- add province 
+alter table muses add province varchar(30)
+;
 -- informations de la table muse par defaut 
 insert into muses(lib_Muse) values('muse nationale') ; 
 
@@ -26,6 +29,9 @@ create table if not exists users(
     constraint pk_users primary key(id_users) 
 );
 
+-- ajout de klk informations par defaut
+alter table users add password_user varchar(80) , add email_user varchar(80) ;
+
 -- information par defaut 
 
-insert into users(username,first_name,function_user,muse_id) values('admin', 'admin','administrataire' , 1);
+insert into users(username,first_name,function_user,muse_id,email_user,password_user) values('admin', 'admin','administrataire' , 1, 'admin@gmail.com','admin@');

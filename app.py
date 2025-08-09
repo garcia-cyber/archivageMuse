@@ -1,4 +1,5 @@
 from flask import Flask ,  render_template , session , request , flash ,redirect   
+import psycopg2
 
 import pymysql
 
@@ -8,6 +9,13 @@ db=pymysql.connect(user='root', host='localhost',password='',db='muse')
 app = Flask(__name__)
 app.secret_key = "museEquipeDev@@"
 
+##
+## appel du data 
+
+def data():
+    con=psycopg2.connect(database = 'muses', host='localhost', password='    ',user='postgres', port='5432')
+    return con 
+
 
 
 #
@@ -16,65 +24,97 @@ app.secret_key = "museEquipeDev@@"
 @app.route('/home')
 
 def home():
-    return render_template('front-end/index.html')
+    return render_template('back-end/index.html')
 
 
 ## login (arthur)
 @app.route('/login', methods=['POST','GET'])
 def login():
-
     if request.method == 'POST':
 
-        noms = request.form['noms']
+        email = request.form['email']
         password = request.form['password']
-        fonction =request.form['fonction']
 
-        cur=db.cursor()
-        cur.execute("select * from users where noms=%s and password=%s",[noms,password])
-        data =cur.fetchone()
-
-        if data:
+        dt = data()
+        cur = dt.cursor()
+        cur.execute('select * from users where email=%s and password=%s',[email,password])
+        dat= cur.fetchone()
+        if dat:
 
             session['session']=True
-            session['noms']= db[1]
-
+            session['id']= dat[0]
+            session['fonction'] = dat[5] 
             return redirect('/home')
         else:
-            return render_template('back-end/auth-login.html')
+            flash("mot de passe incorrecte")
+            return redirect('/login')
+
+    return render_template('back-end/auth-login.html') 
+
+## deconnexion
+@app.route('/deco')
+def deco():
+    session.clear()
+    return redirect('/login')
+
+
+## creation des muse 
+@app.route('/muse', methods =['POST','GET'])
+def muse():
+    if 'session' in session:
+        return render_template('back-end/forms-validation.html')
+    else:
+        return redirect('/login')
 
 
 ## register
-@app.route('/', methods=['POST','GET'])
 @app.route('/register', methods=['POST','GET'])
 def register():
+    pass
 
-    if request.method == 'POST':
 
-        noms = request.form['noms']
-        pwd = request.form['pwd']
-        fonction = request.form['fonction']
-        conf = request.form['conf']
+@app.route('/Enreg', methods=['POST','GET'])
+def Enreg():
+        if 'session' in session :
+            if request.method == 'POST':
+                nomM = request.form['nomM']
+                province = request.form['province'] 
 
-        cur = db.cursor()
-        cur.execute("insert into users(noms,pwd,fonction) values(%s,%s,%s)",[noms,pwd,fonction])
-        aff=cur.fetchone()
+                # condition pour verifier si le nom du muse existe deja
+                con = data()
+                cur = con.cursor()
+                cur.execute("insert into muses(lib_muse , province_M) values(%s , %s)",[nomM , province]) 
+                con.commit()
+                cur.close()
+                con.close()
+                flash("information enregistre !!!")
 
-        if aff:
-            flash('mot de passe existe')
-
-        elif pwd == conf:
-
-            return redirect('/login')
-
+            return render_template('back-end/forms-validation.html')
         else:
-            return render_template('auth-register.html')
-
+            return redirect('/login')
     
+##
+#
+# ajout des utilisateurs du systeme par muse
 
-    return render_template('back-end/auth-register.html')
+@app.route('/adduser', methods=['POST','GET'])
+def adduser():
 
 
+    # appel des information dans la table muses
+    call = data()
+    cur = call.cursor()
+    cur.execute("select * from muses")
+    fetch = cur.fetchall()
 
+    return render_template('back-end/forms-users.html' ,fetch = fetch)
+
+#
+#
+# liste des muses 
+@app.route('/lstM', methods=['POST','GET'])
+def lstM():
+    return render_template('back-end/export-table.html')
 
 
 
