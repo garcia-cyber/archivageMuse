@@ -37,21 +37,22 @@ cur.execute("""
 
 
 # creation de la table artefact
-# cur.execute("""
-#                 create table if not exists artefacts(
-#             id_atefact serial primary key , 
-#             numero_accession varchar(50),
-#             tire varchar(50),
-#             description text,
-#             date_creation date ,
-#             materiau varchar(100),
-#             dimensions varchar(100),
-#             provenance text 
+cur.execute("""
+               create table if not exists artefacts(
+             id_atefact serial primary key , 
+             numero_accession varchar(50),
+             tire varchar(50),
+             description text,
+             date_creation date ,
+             materiau varchar(100),
+             dimensions varchar(100),
+             provenance text,
+             collection_id serial references collections(id_collection)
             
-#             )
+             )
 
 
-#  """)
+  """)
 
 
 # creation de la table createurs 
