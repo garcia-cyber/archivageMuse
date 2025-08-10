@@ -4,7 +4,7 @@ import psycopg2
 import pymysql
 
 
-db=pymysql.connect(user='root', host='localhost',password='',db='muse')
+# db=pymysql.connect(user='root', host='localhost',password='',db='muse')
 
 app = Flask(__name__)
 app.secret_key = "museEquipeDev@@"
@@ -28,6 +28,7 @@ def home():
 
 
 ## login (arthur)
+@app.route('/')
 @app.route('/login', methods=['POST','GET'])
 def login():
     if request.method == 'POST':
@@ -149,19 +150,200 @@ def lstU():
 
     return render_template('back-end/export-table.html' , aff = da)
 
+## enregistrement de la collection 
+#
+#
+#
+#
+@app.route('/collectionAdd', methods = ['POST','GET']) 
+def collectionAdd():
+    if 'session' in session:
+        if request.method == 'POST':
+            collection  = request.form['collection'] 
+            description = request.form['desc'] 
 
-##
-##
-## ajout des artefact
-@app.route('/artefactAdd', methods = ['POST','GET'])
-def artefactAdd():
+            ##
+            ##
+            ## verification  du collection 
+            #
+            coll = data()
+            ver = coll.cursor()
+            ver.execute("select * from collections where nom_collection = %s" , [collection])
+            dataVer = ver.fetchone()
+
+            if dataVer:
+                flash("la collection existe deja !!!!")
+            else:
+                dbd = data()
+                cur = dbd.cursor()
+                cur.execute('insert into collections(nom_collection,desc_collection,collection_id) values(%s,%s,%s)',[collection,description,session['id']])
+                dbd.commit()
+                cur.close()
+                dbd.close()   
+
+                flash(f"{collection} enregistre ")
+                return redirect('/collectionAdd') 
+            
+        return render_template('back-end/collectionAdd.html')
+    else:
+        return  redirect('/login')
+     
+# affichage contenue table collection
+#
+#
+#
+@app.route('/lstcoll')
+def lstcoll():
+
     if 'session' in session :
-        return render_template('back-end/artefactAdd.html')
+        #liste des informations dans la table collections
+        #
+        #
+        #
+        coll = data()
+        cur = coll.cursor()
+        cur.execute("select * , username from collections inner join users on collections.collection_id = users.idu") 
+        aff = cur.fetchall()
+
+        return render_template('back-end/collection-table.html', aff  = aff )
+
     else:
         return redirect('/login')
+#
+#
+#
+# creation d'artefact 
+# 
+@app.route('/artefactAdd', methods =['POST','GET']) 
+def artefactAdd():
+    if 'session' in session:
+        if request.method == 'POST':
+            numero = request.form['numero']
+            titre = request.form['titre']
+            desc = request.form['desc']
+            date = request.form['date']
+            materiau = request.form['materiau']
+            dimension = request.form['dimension']
+            provenance = request.form['provenance']
+            collection = request.form['collection']
+
+            #
+            # le numero_accession
+            #
+            acc = data()
+            accc = acc.cursor()
+            accc.execute("select * from artefacts where numero_accession = %s", [numero])
+            ver = accc.fetchone()
+
+            if ver:
+                flash("le numero_accession existe deja")
+            else:
+                    
+
+             artef = data()
+             cur = artef.cursor()
+             cur.execute("insert into artefacts(numero_accession,titre,description,date_creation,materiau,dimeensions,preovenance,collection_id) values(%s,%s,%s,%s,%s,%s,%s,%s)",[numero,titre,desc,date,materiau,dimension,provenance,collection])
+             data.commit()
+
+        #collection dans la table artect
+        coll = data()
+        cur = coll.cursor()
+        cur.execute("select * from collections ")
+        aff = cur.fetchall()
+
+        return render_template('back-end/form-artefact.html', aff = aff)
+    else:
+        return redirect('/login')
+    
+# affichage contenue table artefact
+@app.route('/artfvue')
+def artfvue():
+
+   if 'session' in session:
+       
+        art = data()
+        cur = art.cursor()
+        cur.execute("select * from artefacts")
+        dt = cur.fetchall()
+
+        return render_template('back-end/artefact-table.html', artfaff = dt)
+   else:
+       return redirect('/login') 
+
+ #affichage table artefact
+@app.route('/lstArtf', methods =['POST','GET'])
+def lstArtf():
+
+    if 'session' in session:
+            pass
+        
+    else:
+
+        return redirect('/login')   
+     
+#affichage contenue createur
+@app.route('/lstcreat', methods=['POST','GET'])
+def lstcreat():
+
+    if 'session' in session:
+
+        pass
+
+    else:
+        return redirect('/login') 
 
 
+#enregistrement createurs
+@app.route('/creatform', methods = ['POST','GET'])
+def creatform():
 
+    if 'session' in session:
+
+        if request.method == 'POST':
+
+            nom = request.form['nom']
+            prenom = request.form['prenom'] 
+            dateN  = request.form['dateN']
+            dateD  = request.form['dateD']
+            Nat    = request.form['Nat']
+
+            crt = data()
+            cur = crt.cursor()
+            cur.execute("insert into createurs(nom,prenom,date_nai,date_deces,nationalite) values(%s,%s,%s,%s,%s,%s)",[nom,prenom,dateN,dateD,Nat])
+            data.commit()
+
+        return render_template('back-end/form-createurs.html')
+                   
+    else:
+        return redirect('/login')
+    
+# affichage contenue table createur
+
+@app.route('/crtaff')
+def crtaff():
+
+    if 'session' in session:
+
+            crtaf = data()
+            cur = crtaf.cursor()
+            cur.execute("select * from createurs")
+            view = cur.fetchall()
+            return render_template('back-end/create-table.html', crt = view)
+
+    else:
+        return redirect('/login')
+        
+
+    
+# affichage contenue table artefact et createurs
+@app.route('/lstart_creat', methods=['POST','GET'])
+def lsart_creat():
+
+    if 'session' in session:
+        pass
+
+    else:
+        return redirect('/login')
 
 ## boucle 
 

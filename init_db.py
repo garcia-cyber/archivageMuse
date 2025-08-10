@@ -35,6 +35,9 @@ cur.execute("""
 
 """)
 
+# ajout de la cle etrangere
+
+# cur.execute("alter table collections add collection_id bigserial references users(idU)") 
 
 # creation de la table artefact
 cur.execute("""
@@ -66,8 +69,14 @@ cur.execute("""
             nationalite varchar(50), 
             user_id bigserial references users(idu))
             
-            """)
+            """) 
+## table 
+cur.execute(""" 
+            create table if not exists artefact_createur(
+            id_artefact integer references createurs(id_createur) 
+            )
 
+""")
 con.commit()
 cur.close()
 con.close()
