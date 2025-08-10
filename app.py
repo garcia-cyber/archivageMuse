@@ -238,12 +238,20 @@ def artefactAdd():
             if ver:
                 flash("le numero_accession existe deja")
             else:
+
+             
                     
 
-             artef = data()
-             cur = artef.cursor()
-             cur.execute("insert into artefacts(numero_accession,titre,description,date_creation,materiau,dimeensions,preovenance,collection_id) values(%s,%s,%s,%s,%s,%s,%s,%s)",[numero,titre,desc,date,materiau,dimension,provenance,collection])
-             data.commit()
+                artef = data()
+                cur = artef.cursor()
+                cur.execute("insert into artefacts(numero_accession,tire,description,date_creation,materiau,dimensions,provenance,collection_id) values(%s,%s,%s,%s,%s,%s,%s,%s)",[numero,titre,desc,date,materiau,dimension,provenance,collection])
+                artef.commit() 
+                cur.close()
+                artef.close()
+
+                flash("donnee enregistre")
+                return redirect('/artefactAdd') 
+
 
         #collection dans la table artect
         coll = data()
@@ -309,8 +317,11 @@ def creatform():
 
             crt = data()
             cur = crt.cursor()
-            cur.execute("insert into createurs(nom,prenom,date_nai,date_deces,nationalite) values(%s,%s,%s,%s,%s,%s)",[nom,prenom,dateN,dateD,Nat])
-            data.commit()
+            cur.execute("insert into createurs(nom,prenom,date_nai,date_deces,nationalite,user_id) values(%s,%s,%s,%s,%s,%s)",[nom,prenom,dateN,dateD,Nat,session['id']])
+            crt.commit() 
+            cur.close()
+            crt.close()
+            flash("information enregistre !!!") 
 
         return render_template('back-end/form-createurs.html')
                    

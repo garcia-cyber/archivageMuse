@@ -20,7 +20,7 @@
                 <li><a class="nav-link" href="/collectionAdd">Ajouter collections</a></li>
                 <li><a class="nav-link" href="/artefactAdd">Ajouter artefact</a></li>
                 
-                <li><a class="nav-link" href="/createursAdd">Ajouter createur</a></li>
+                <li><a class="nav-link" href="/creatform">Ajouter createur</a></li>
                 {%else%}
                 <li><a class="nav-link" href="/collectionAdd">Ajouter collections</a></li>
                     <!-- <li><a class="nav-link" href="/artefactAdd">Ajouter artefact</a></li> -->
@@ -93,6 +93,8 @@
                 {%  if session['fonction'] == 'administrataire'  %}
                 <li><a class="nav-link" href="/lstU">utilisateurs</a></li>
                 <li><a class="nav-link" href="/lstcoll">collections</a></li>
+                <li><a class="nav-link" href="">Artefacts</a></li>
+                <li><a class="nav-link" href="/crtaff">createurs</a></li>
                 {% else %}
 
                 {% endif %}
