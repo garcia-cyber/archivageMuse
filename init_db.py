@@ -73,10 +73,29 @@ cur.execute("""
 ## table 
 cur.execute(""" 
             create table if not exists artefact_createur(
-            id_artefact integer references createurs(id_createur) 
+            id_artefact integer generated always as identity primary key ,
+            role varchar(50) ,
+            createur_id serial references createurs(id_createur) , 
+            artefact_id serial references artefacts(id_atefact), 
+            date_register timestamp default current_timestamp
             )
 
 """)
+
+cur.execute(""" 
+            create table if not exists ressource_numerique(
+            id_ressource serial primary key,
+            users_id serial references users(idu),
+            artefacts_id serial references artefacts(id_atefact),
+            chemin_fichier varchar(255),
+            nom_fichier varchar(20),
+            type_fichier varchar(50),
+            description text,
+            date_telechargement timestamp default current_timestamp
+            )
+""")
+
+
 con.commit()
 cur.close()
 con.close()

@@ -1,6 +1,6 @@
 from flask import Flask ,  render_template , session , request , flash ,redirect   
 import psycopg2
-
+import os
 import pymysql
 
 
@@ -8,6 +8,7 @@ import pymysql
 
 app = Flask(__name__)
 app.secret_key = "museEquipeDev@@"
+app.config['UPLOAD_NUMERIQUE'] = 'static/ressources' 
 
 ##
 ## appel du data 
@@ -24,7 +25,10 @@ def data():
 @app.route('/home')
 
 def home():
-    return render_template('back-end/index.html')
+    if 'session' in session:
+        return render_template('back-end/index.html')
+    else:
+        return redirect('/login')
 
 
 ## login (arthur)
@@ -271,7 +275,7 @@ def artfvue():
        
         art = data()
         cur = art.cursor()
-        cur.execute("select * from artefacts")
+        cur.execute("select *, nom_collection from artefacts inner join collections on artefacts.collection_id = collections.id_collection")
         dt = cur.fetchall()
 
         return render_template('back-end/artefact-table.html', artfaff = dt)
@@ -327,6 +331,10 @@ def creatform():
                    
     else:
         return redirect('/login')
+
+
+
+
     
 # affichage contenue table createur
 
@@ -347,14 +355,102 @@ def crtaff():
 
     
 # affichage contenue table artefact et createurs
-@app.route('/lstart_creat', methods=['POST','GET'])
-def lsart_creat():
+@app.route('/art_creat', methods=['POST','GET'])
+def art_creat():
 
     if 'session' in session:
-        pass
+        if request.method == 'POST':
+            createur = request.form['createur']
+            artefact = request.form['artefact']
+            role     = request.form['role']
+            call = data()
+            cur = call.cursor()
+            cur.execute("insert into artefact_createur(role,createur_id,artefact_id) values(%s,%s,%s)",[role,createur,artefact]) 
+            call.commit()
+            cur.close()
+            call.close()
+            flash("information enregistre !!!!")
+
+            return redirect('/art_creat')
+        
+        call = data()
+
+        #liste de artefacte 
+        #
+        artefact = call.cursor()
+        artefact.execute("select * from artefacts")
+        data_art = artefact.fetchall()
+
+        #liste des createurs
+        #
+        createur = call.cursor()
+        createur.execute("select * from createurs")
+        data_createur = createur.fetchall()
+
+        return render_template('back-end/form-art_creat.html', data_art = data_art , data_createur = data_createur ) 
 
     else:
         return redirect('/login')
+    
+
+#
+# affichage des artefact createur
+@app.route('/art_creat_aff')
+def art_creat_aff():
+    if 'session' in session :
+        all = data()
+
+
+        
+        create = all.cursor()
+        create.execute("select id_artefact , nom , prenom ,tire  ,date_creation , role from artefact_createur inner join createurs on artefact_createur.createur_id = createurs.id_createur inner join artefacts on artefact_createur.artefact_id = id_atefact") 
+        aff_create = create.fetchall()
+        return render_template('back-end/art_creat_aff.html',aff_create =aff_create )
+    else:
+        return redirect("/login")
+
+
+#
+#
+##
+# numerique ressource 
+#
+#
+@app.route('/numerique', methods = ['POST','GET'])
+def numerique():
+    if 'session' in session :
+
+        if request.method == 'POST':
+            artefact     = request.form['artefact'] 
+            chemin       = request.files['chemin']
+            nom_fichier  = request.form['nom_fichier'] 
+            type_fichier = request.form['type_fichier']  
+            description  = request.form['description'] 
+
+            ch = os.path.join(app.config['UPLOAD_NUMERIQUE']  , chemin.filename)  
+            chemin.save(ch) 
+
+            # send database 
+            da = data()
+            cur = da.cursor()
+            cur.execute("insert into ressource_numerique(users_id,artefacts_id,chemin_fichier,nom_fichier,type_fichier,description) values(%s,%s,%s,%s,%s,%s)",[session['id'],artefact,chemin.filename,nom_fichier,type_fichier,description]) 
+            da.commit()
+            cur.close()
+            da.close()
+
+            flash('information enregistre')
+            return redirect('/numerique')
+
+
+        # artefact liste
+
+        info = data()
+        art = info.cursor()
+        art.execute("select * from artefacts")
+        aff_art = art.fetchall()
+        return render_template('back-end/form_numerique.html' , aff_art = aff_art)
+    else:
+        return redirect('/login') 
 
 ## boucle 
 

@@ -34,49 +34,48 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Artefacts Table</h4>
+                    <h4>Artefacts createurs Table</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
                       <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
                         <thead> 
                           <tr>
+                            <!-- nom , prenom ,tire  ,date_creation , role -->
                             <th>id</th>
-                            <th>numero</th>
-                            <th>titre</th>
-                            <th>description</th>
-                            <th>date</th>
-                            <th>materiau</th>
-                            <th>dimension</th>
-                            <th>provenance</th>
-                            <th>collection</th>
+                            <th>noms</th>
+                            <th>prenom</th>
+                            <th>titres</th>
+                            <th>date des creations</th>
+                            <th>roles</th>
                             <th>actions</th>
+                            
                           </tr>
 
                         </thead>
 
                         <tbody>
-                          {% for i in artfaff %}
-                          <tr>
-                            <td>{{i[0]}}</td>
-                            <td>{{i[1]}}</td>
-                             <td>{{i[2]}}</td>
+                          <!-- nom , prenom ,tire  ,date_creation , role -->
+
+                          {% for i in aff_create %}
+                            <tr>
+                              <td>{{i[0]}}</td>
+                              <td>{{i[1]}}</td>
+                              <td>{{i[2]}}</td>
                               <td>{{i[3]}}</td>
                               <td>{{i[4]}}</td>
                               <td>{{i[5]}}</td>
-                              <td>{{i[6]}}</td>
-                              <td>{{i[7]}}</td>
-                              <td>{{i[10]}}</td>
                               <td>
-
-                                <a href="" class="btn btn-primary">modifier</a>
-
+                                <a href="" class="btn btn-outline-secondary">modifier</a>
                               </td>
+                              
 
-                          </tr>
+                                
+                            </tr>
                           {% endfor %}
-
                         </tbody>
+
+                        
 
                         <tfoot>
                           <tr>

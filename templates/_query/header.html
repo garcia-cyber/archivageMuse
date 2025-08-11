@@ -21,10 +21,13 @@
                 <li><a class="nav-link" href="/artefactAdd">Ajouter artefact</a></li>
                 
                 <li><a class="nav-link" href="/creatform">Ajouter createur</a></li>
+                <li><a class="nav-link" href="/art_creat">Artefacts createurs</a></li>
+                <li><a class="nav-link" href="/numerique">Ressource numerique</a></li>
                 {%else%}
                 <li><a class="nav-link" href="/collectionAdd">Ajouter collections</a></li>
                     <!-- <li><a class="nav-link" href="/artefactAdd">Ajouter artefact</a></li> -->
                     <li><a class="nav-link" href="/createursAdd">Ajouter createur</a></li>
+                    <li><a class="nav-link" href="/art_creat">Artefacts createurs</a></li>
 
                 {% endif %}  
                 
@@ -93,8 +96,11 @@
                 {%  if session['fonction'] == 'administrataire'  %}
                 <li><a class="nav-link" href="/lstU">utilisateurs</a></li>
                 <li><a class="nav-link" href="/lstcoll">collections</a></li>
-                <li><a class="nav-link" href="">Artefacts</a></li>
+                <li><a class="nav-link" href="/artfvue">Artefacts</a></li>
                 <li><a class="nav-link" href="/crtaff">createurs</a></li>
+                <li><a class="nav-link" href="/art_creat_aff">Artefacts createurs</a></li>
+                <li><a class="nav-link" href="/lst_num">Ressource numerique</a></li>
+                
                 {% else %}
 
                 {% endif %}
