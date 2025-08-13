@@ -5,6 +5,26 @@ cur = con.cursor()
 
 cur.execute(''' create table if not exists muses(idM serial primary key , lib_muse varchar(30) , province_M varchar(40)) ''') 
 
+# creation de la table roles
+#
+#
+cur.execute("""
+
+            create table if not exists roles(
+            id_role serial primary key , 
+            libelle_role varchar(40))
+
+
+    """)
+
+#
+# information de la table role par defaut
+#
+#
+
+#cur.execute("insert into roles(libelle_role) values('admin'), ('sous-admin'), ('consultant'),('invite'),('archiviste')") 
+
+
 
 # creation de la table users 
 cur.execute("""
@@ -12,13 +32,14 @@ cur.execute("""
             idU bigserial primary key , 
             username varchar(40) , 
             email varchar(30) , 
-            password varchar(40) ,
+            password varchar(255) ,
             muse_id serial references muses(idM),
             unique(muse_id))
             
             """)
 
 # cur.execute("alter table users add fonctions varchar(30)")
+#cur.execute("alter table users add role_id serial references roles(id_role)")
 
 # inormation par defaut 
 # cur.execute("insert into users(username ,email,password) values('admin', 'admin@gmail.com','admin@')") 
@@ -30,10 +51,13 @@ cur.execute("""
     create table if not exists collections(
             id_collection serial primary key , 
             nom_collection varchar(255) unique not null,
-            desc_collection text
+            desc_collection text , 
+            dateCreate_coll timestamp default current_timestamp
             )
 
 """)
+
+
 
 # ajout de la cle etrangere
 

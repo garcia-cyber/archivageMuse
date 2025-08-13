@@ -79,6 +79,21 @@
                         </div>
                       </div>
 
+                      {% if session['role'] == 2 %}
+                        
+                      <div class="form-group">
+                        <label>role</label>
+                        <select name="role" id="" class="form-control">
+                            {% for i in roles %}
+                            <option value="{{i[0]}}">{{i[1]}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">
+                          What's your name?
+                        </div>
+                      </div>
+                      {% endif %}
+
                       
 
 

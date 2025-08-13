@@ -1,4 +1,5 @@
 from flask import Flask ,  render_template , session , request , flash ,redirect   
+from werkzeug.security import generate_password_hash , check_password_hash 
 import psycopg2
 import os
 import pymysql
@@ -9,6 +10,12 @@ import pymysql
 app = Flask(__name__)
 app.secret_key = "museEquipeDev@@"
 app.config['UPLOAD_NUMERIQUE'] = 'static/ressources' 
+
+
+##
+# migration 
+#
+#
 
 ##
 ## appel du data 
@@ -26,7 +33,20 @@ def data():
 
 def home():
     if 'session' in session:
-        return render_template('back-end/index.html')
+        #nombres utilisateurs 
+        #
+        nbr = data().cursor()
+        nbr.execute("select * from users") 
+        nbr_nbr = len(nbr.fetchall()) 
+
+        #nombre de collection par archiviste
+        #
+        #
+        coll = data().cursor()
+        coll.execute("select * from collections where collection_id = %s",[session['id']]) 
+        coll_nbr = len(coll.fetchall())
+
+        return render_template('back-end/index.html' , nbr = nbr_nbr , coll_nbr = coll_nbr)
     else:
         return redirect('/login')
 
@@ -38,7 +58,10 @@ def login():
     if request.method == 'POST':
 
         email = request.form['email']
-        password = request.form['password']
+        password = request.form['password'] 
+
+
+        
 
         dt = data()
         cur = dt.cursor()
@@ -48,7 +71,9 @@ def login():
 
             session['session']=True
             session['id']= dat[0]
+            session['nom'] = dat[1]
             session['fonction'] = dat[5] 
+            session['role']    =  dat[6] 
             return redirect('/home')
         else:
             flash("mot de passe incorrecte")
@@ -111,7 +136,9 @@ def adduser():
         email = request.form['email'] 
         muse  = request.form['muse']
         fonction = 'sous-admin' 
-        password = '12345'
+        role  = 2
+        password = generate_password_hash('12345') 
+        roles = request.form['role']
 
         #verification du mail
         dd = data() 
@@ -119,14 +146,40 @@ def adduser():
         mail.execute("select * from users where email = %s", [email])
         ver = mail.fetchone()
 
-        ## !!!! VERIFICATION DU NOM DU MUSE 
+        ## !!! VERIFICATION DU DOUBLON SOUS-ADMIN DANS LA MEME MUSE
+       
+        meme = data().cursor()
+        meme.execute("select * from users where role_id = 2 and muse_id = %s", [muse])
+        aff_meme = meme.fetchone()
 
+        ##
+        #
+        # verification du sous admin dans la mise 
+        # sous = data().cursor()
+        # sous.execute("select * from users where role_id = %s")
+
+        ## !!!! VERIFICATION DU NOM DU MUSE 
         if ver:
             flash("l'email existe deja dans le systeme ")
+        ## !!! VERIFICATION DU DOUBLON SOUS-ADMIN DANS LA MEME MUSE
+        
+
+        elif session['role'] == 1 :
+            if aff_meme:
+                flash("le sous-admin existe deja dans la muse !!!") 
+        elif session['role'] == 2:
+            dbs = data()
+            cur = dbs.cursor()
+            cur.execute("insert into users(username,email,password,muse_id,fonctions, role_id) values(%s,%s,%s,%s,%s,%s)",[user,email,password,muse,fonction,roles]) 
+            dbs.commit()
+            cur.close()
+            dbs.close()
+            flash(f"{user} enregistre dans le systeme ") 
+
         else:
             dbs = data()
             cur = dbs.cursor()
-            cur.execute("insert into users(username,email,password,muse_id,fonctions) values(%s,%s,%s,%s,%s)",[user,email,password,muse,fonction]) 
+            cur.execute("insert into users(username,email,password,muse_id,fonctions, role_id) values(%s,%s,%s,%s,%s,%s)",[user,email,password,muse,fonction,role]) 
             dbs.commit()
             cur.close()
             dbs.close()
@@ -139,7 +192,12 @@ def adduser():
     cur.execute("select * from muses")
     fetch = cur.fetchall()
 
-    return render_template('back-end/forms-users.html' ,fetch = fetch)
+    # appel dans la table role 
+    role = data().cursor()
+    role.execute("select * from roles where id_role not in (1,2) ") 
+    roles = role.fetchall()
+
+    return render_template('back-end/forms-users.html' ,fetch = fetch , roles = roles)
 
 #
 #
@@ -206,7 +264,7 @@ def lstcoll():
         #
         coll = data()
         cur = coll.cursor()
-        cur.execute("select * , username from collections inner join users on collections.collection_id = users.idu") 
+        cur.execute("select * , username from collections inner join users on collections.collection_id = users.idu where collection_id = %s ",[session['id']]) 
         aff = cur.fetchall()
 
         return render_template('back-end/collection-table.html', aff  = aff )
@@ -431,7 +489,7 @@ def numerique():
             chemin.save(ch) 
 
             # send database 
-            da = data()
+            da = data() 
             cur = da.cursor()
             cur.execute("insert into ressource_numerique(users_id,artefacts_id,chemin_fichier,nom_fichier,type_fichier,description) values(%s,%s,%s,%s,%s,%s)",[session['id'],artefact,chemin.filename,nom_fichier,type_fichier,description]) 
             da.commit()
@@ -439,7 +497,7 @@ def numerique():
             da.close()
 
             flash('information enregistre')
-            return redirect('/numerique')
+            return redirect('/numerique') 
 
 
         # artefact liste

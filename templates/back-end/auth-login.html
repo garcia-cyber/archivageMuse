@@ -15,20 +15,34 @@
   <link rel="stylesheet" href="{{url_for('static', filename='back-end/assets/css/components.css')}}">
   <!-- Custom style CSS -->
   <link rel="stylesheet" href="{{url_for('static', filename='back-end/assets/css/custom.css')}}">
-  <link rel='shortcut icon' type='image/x-icon' href='assets/img/favicon.ico' />
+  <link rel='shortcut icon' type='image/x-icon' href='assets/img/favicon.ico' /> 
+
+  <style>
+    .body{
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      background: linear-gradient(to left , #0008 , #000400),url('/static/back-end/assets/img/img1.png') no-repeat;
+      background: linear-gradient(to left , #0008 , #000400),url('/static/back-end/assets/img/muse2.jpg') no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
 </head>
 
 <body>
   <div class="loader"></div>
   <div id="app">
-    <section class="section">
+    <section class="section body">
       <div class="container mt-5">
         <div class="row">
           <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
             <div class="card card-primary">
               <div class="card-header">
                 
-                <h4>Login</h4>
+                <h4 class="text-center">Login</h4>
               </div>
               <div class="card-body">
                 {% with messages = get_flashed_messages() %}
